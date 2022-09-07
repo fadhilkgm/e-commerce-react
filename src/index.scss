@@ -1,4 +1,5 @@
 body {
+  padding: 20px 40px;
   margin: 0;
   font-family:'Poppins', sans-serif,
     sans-serif;
@@ -16,4 +17,7 @@ a{
 }
 *{
   box-sizing: border-box;
+}
+:root{
+  --border-rad:10px ;
 }
