@@ -13,6 +13,11 @@ export const CartDropdownContainer = styled.div`
   z-index: 5;
   border: 1px solid black;
 
+  ::-webkit-scrollbar    {
+    background-color: red;
+  }
+
+
   ${BaseButton},
   ${GoogleSignInButton},
   ${InvertedButton} {
@@ -31,3 +36,4 @@ export const CartItems = styled.div`
   flex-direction: column;
   overflow: scroll;
 `;
+
