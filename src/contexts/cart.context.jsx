@@ -2,6 +2,8 @@ import { createContext, useState, useReducer } from 'react';
 
 import { createAction } from '../utils/reducer/reducer.utils';
 
+//function to add item to cart
+
 const addCartItem = (cartItems, productToAdd) => {
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === productToAdd.id
@@ -17,6 +19,8 @@ const addCartItem = (cartItems, productToAdd) => {
 
   return [...cartItems, { ...productToAdd, quantity: 1 }];
 };
+
+//remove item from cart
 
 const removeCartItem = (cartItems, cartItemToRemove) => {
   // find the cart item to remove
@@ -37,12 +41,16 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
   );
 };
 
+//actions types
+
 const CART_ACTION_TYPES = {
   SET_IS_CART_OPEN: 'SET_IS_CART_OPEN',
   SET_CART_ITEMS: 'SET_CART_ITEMS',
   SET_CART_COUNT: 'SET_CART_COUNT',
   SET_CART_TOTAL: 'SET_CART_TOTAL',
 };
+
+//initial states
 
 const INITIAL_STATE = {
   isCartOpen: false,
@@ -51,7 +59,10 @@ const INITIAL_STATE = {
   cartTotal: 0,
 };
 
+//reducer function
+
 const cartReducer = (state, action) => {
+
   const { type, payload } = action;
 
   switch (type) {
@@ -65,8 +76,10 @@ const cartReducer = (state, action) => {
   }
 };
 
-const clearCartItem = (cartItems, cartItemToClear) =>
-  cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
+
+
+
+//cart context function
 
 export const CartContext = createContext({
   isCartOpen: false,
@@ -79,13 +92,20 @@ export const CartContext = createContext({
   cartTotal: 0,
 });
 
+//cart provider
+
 export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+//using useReducer hook 
 
   const [{ cartCount, cartTotal, cartItems }, dispatch] = useReducer(
     cartReducer,
     INITIAL_STATE
   );
+
+  //update cart item reducer function 
+
 
   const updateCartItemsReducer = (cartItems) => {
     const newCartCount = cartItems.reduce(
@@ -107,20 +127,36 @@ export const CartProvider = ({ children }) => {
     dispatch(createAction(CART_ACTION_TYPES.SET_CART_ITEMS, payload));
   };
 
+  //adding am item to cart function
+
   const addItemToCart = (productToAdd) => {
     const newCartItems = addCartItem(cartItems, productToAdd);
     updateCartItemsReducer(newCartItems);
   };
 
+    //removing an item from cart function ie, - count
+
+    
   const removeItemToCart = (cartItemToRemove) => {
     const newCartItems = removeCartItem(cartItems, cartItemToRemove);
     updateCartItemsReducer(newCartItems);
   };
 
+
+//clear a item from the cart
+
+const clearCartItem = (cartItems, cartItemToClear) =>
+  cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
+
+
+
+
   const clearItemFromCart = (cartItemToClear) => {
     const newCartItems = clearCartItem(cartItems, cartItemToClear);
     updateCartItemsReducer(newCartItems);
   };
+
+//value passed to provider
 
   const value = {
     isCartOpen,
@@ -132,6 +168,9 @@ export const CartProvider = ({ children }) => {
     cartCount,
     cartTotal,
   };
+
+  //cart context 
+
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

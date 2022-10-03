@@ -1,4 +1,5 @@
 import { createContext, useEffect, useReducer } from 'react';
+
 import { createAction } from '../utils/reducer/reducer.utils';
 
 import {
@@ -11,47 +12,31 @@ export const UserContext = createContext({
   currentUser: null,
 });
 
-
-export const USER_ACTIONS_TYPE={
-  SET_CURRENT_USER: 'SET_CURRENT_USER'
-}
-
-export const userReducer = (state,action) =>{
-  console.log('dispatched');
-  console.log(action);
-  const {type , payload} = action;
-
-  switch(type){
-    case USER_ACTIONS_TYPE.SET_CURRENT_USER:
-      return{
-        ...state,
-        currentUser: payload
-      }
-      
-      default:
-        throw new Error(`Unhandled type ${type} in userReducer`)
-  }
-}
+export const USER_ACTION_TYPES = {
+  SET_CURRENT_USER: 'SET_CURRENT_USER',
+};
 
 const INITIAL_STATE = {
-  currentUser:null
-}
+  currentUser: null,
+};
+
+const userReducer = (state, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case USER_ACTION_TYPES.SET_CURRENT_USER:
+      return { ...state, currentUser: payload };
+    default:
+      throw new Error(`Unhandled type ${type} in userReducer`);
+  }
+};
 
 export const UserProvider = ({ children }) => {
+  const [{ currentUser }, dispatch] = useReducer(userReducer, INITIAL_STATE);
 
+  const setCurrentUser = (user) =>
+    dispatch(createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user));
 
-  // const [currentUser, setCurrentUser] = useState(null);
-
-  //instead of using useState , use useReducer
-  const [{currentUser} , dispatch] = useReducer(userReducer,INITIAL_STATE);
-  console.log(currentUser);
- 
-   const setCurrentUser = (user)=>{
-    dispatch(createAction(USER_ACTIONS_TYPE.SET_CURRENT_USER,user))
-   }
-
-  const value = { currentUser, setCurrentUser };
-  
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user) {
@@ -63,7 +48,11 @@ export const UserProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  console.log(currentUser);
+
+  const value = {
+    currentUser,
+  };
+
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
-
-
