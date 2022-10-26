@@ -1,6 +1,6 @@
 import {Routes, Route } from 'react-router-dom'
 import CategoriesPreview from './../categories-preview/categories-preview';
-import Category from '../category/Category';
+import Category from '../category/category.component';
 import { useEffect } from 'react';
 import { getCategoriesAndDocuments } from '../../utils/firebase/firebase.utils';
 import { setCategories } from '../../store/categories/categories.actions';
